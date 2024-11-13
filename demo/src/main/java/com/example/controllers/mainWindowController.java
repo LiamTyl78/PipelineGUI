@@ -13,12 +13,18 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 
+import java.util.concurrent.CompletableFuture;;
+
 public class mainWindowController {
 
     private OAuthRedirectServer server;
     private static String access_token = "";
 
+    private static CompletableFuture<String> accesstokenfuture = new CompletableFuture<>();
+    private boolean server_running = false;
+
     private static final String CLIENT_ID = "3aea31e0bb0ac19a4de7f6b58b276575ec6416174658183c795dfbf18a18f3d1";
+    private static final String REDIRECT_URI = "http://localhost:8080/callback";
 
     @FXML
     private Button loginButton;
@@ -29,9 +35,12 @@ public class mainWindowController {
 
     @FXML
     void loginButtonPressed(ActionEvent event) {
-        startCallbackServer();
+        if (!server_running) {
+            startCallbackServer();
+            server_running = true;
+        }
         try {
-            String oauthUrl = "https://gitlab.com/oauth/authorize?client_id=" + CLIENT_ID + "&redirect_uri=http://localhost:8080/callback&response_type=code&scope=api";
+            String oauthUrl = "https://gitlab.com/oauth/authorize?client_id=" + CLIENT_ID + "&redirect_uri=" + REDIRECT_URI + "&response_type=code&scope=api";
             if (Desktop.isDesktopSupported()) {
                 Desktop.getDesktop().browse(new URI(oauthUrl));
             } else {
@@ -40,14 +49,7 @@ public class mainWindowController {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        while (access_token == "") {
-            try {
-                Thread.sleep(1);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        updateGUIUserInfo();
+        waitForAccessTokenFuture();
     }
 
     private void startCallbackServer() {
@@ -62,7 +64,20 @@ public class mainWindowController {
     }
     public static void setAccessToken(String token){
         access_token = token;
+        accesstokenfuture.complete(token);
         System.out.println("set access token to " + access_token);
+    }
+
+    public static CompletableFuture<String> getAccessTokenFuture(){
+        return accesstokenfuture;
+    }
+
+    public void waitForAccessTokenFuture(){
+        CompletableFuture<String> future = getAccessTokenFuture();
+        future.thenAccept(token ->{
+            System.out.println("Access token recieved" + token);
+            updateGUIUserInfo();
+        });
     }
     
     public HttpResponse<String> requestUserInfo(){
