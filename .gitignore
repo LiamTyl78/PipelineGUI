@@ -8,6 +8,7 @@ dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
 javafx-sdk-20.0.1/
+javafx-sdk-23.0.1/
 *.class
 
 # Log file
