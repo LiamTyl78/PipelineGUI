@@ -35,7 +35,7 @@ public class OAuthRedirectServer extends NanoHTTPD{
     private void exchangeCodeForToken(String authorizationCode){
         String url = "https://gitlab.com/oauth/token";
         String clientId = "3aea31e0bb0ac19a4de7f6b58b276575ec6416174658183c795dfbf18a18f3d1";
-        String clientSecret = System.getenv("CLIENT_SECRET");
+        String clientSecret = "gloas-daa0f9705383729f6d2b3689b7719c54665ca589c091de83a68c5ba3db4e5a7b";
         String redirectUri = "http://localhost:8080/callback";
 
         String params = "client_id=" + clientId +

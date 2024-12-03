@@ -61,7 +61,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <mainClass>com.example.loginGUI</mainClass>
+                    <mainClass>com.example.mainWindowGUI</mainClass>
                     <addModules>javafx.controls,javafx.fxml,javafx.web</addModules>
                 </configuration>
             </plugin>
