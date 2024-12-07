@@ -28,3 +28,4 @@ javafx-sdk-23.0.1/
 *.zip
 *.tar.gz
 *.rar
+demo/src/main/java/com/example/Vars.java
